@@ -84,4 +84,23 @@ router.get("/user/:user_id", (req, res) => {
     );
 });
 
+//delete posts
+router.get("/delete", (req, res) => {
+  const errors = {};
+  Post.find({ user: req.params.user_id })
+    .populate("user", ["name", "avatar"])
+    .then(post => {
+      if (!post) {
+        errors.noposts = "No posts for that user";
+        return res.status(404).json(errors);
+      }
+      return res.status(200).json(post);
+    })
+    .catch(err =>
+      res.status(404).json({
+        posts: "There are no posts for the user with ID: " + req.params.user_id
+      })
+    );
+});
+
 module.exports = router;
