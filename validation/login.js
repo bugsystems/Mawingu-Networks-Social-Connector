@@ -6,9 +6,6 @@ module.exports = function validateLoginInputs(data) {
   data.email = !isEmpty(data.email) ? data.email : "";
   data.password = !isEmpty(data.password) ? data.password : "";
   const errors = {};
-  if (!Validator.isLength(data.name, { min: 2, max: 15 })) {
-    errors.name = "Name must have characters between 2 and 15";
-  }
   if (Validator.isEmpty(data.email)) {
     errors.email = "Email field is required";
   }

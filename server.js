@@ -24,10 +24,11 @@ mongoose
   .then(() => console.log("MongoDB Connected"))
   .catch(err => console.log(err));
 
-//passport use
+//passport middleware
 
 app.use(passport.initialize());
 
+//passport config
 require("./config/passport")(passport);
 
 app.get("/", (req, res) => res.send("Hello Node by me to you"));

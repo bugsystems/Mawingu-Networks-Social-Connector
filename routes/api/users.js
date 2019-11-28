@@ -7,7 +7,7 @@ const passport = require("passport");
 //Loading validator
 
 const validateRegisterInput = require("../../validation/register");
-const validateLoginInputs = require("../../validation/register");
+const validateLoginInputs = require("../../validation/login");
 //load user model
 const User = require("../../models/User");
 const bcrypt = require("bcrypt");
@@ -76,40 +76,42 @@ router.post("/login", (req, res) => {
   User.findOne({ email }).then(user => {
     if (!user) {
       return res.status(404).json({ email: "User not registered" });
+    } else {
+      //check user password
+
+      bcrypt.compare(password, user.password).then(isMatch => {
+        if (isMatch) {
+          //user matched
+          const payload = {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            avatar: user.avatar
+          };
+
+          jwt.sign(
+            payload,
+            keys.secretOrKey,
+            { expiresIn: 3600 },
+            (err, token) => {
+              res.json({
+                success: true,
+                token: "Bearer " + token,
+                user: {
+                  id: user.id,
+                  name: user.name,
+                  email: user.email,
+                  password: user.password
+                }
+              });
+            }
+          );
+          // res.json({ message: "Sucess" });
+        } else {
+          return res.status(400).json({ passwword: "Password incorrect" });
+        }
+      });
     }
-    //check user password
-
-    bcrypt.compare(password, user.password).then(isMatch => {
-      if (isMatch) {
-        //user matched
-        const payload = {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          avatar: user.avatar
-        };
-
-        jwt.sign(
-          payload,
-          keys.secretOrKey,
-          { expiresIn: 3600 },
-          (err, token) => {
-            res.json({
-              success: true,
-              token: "Bearer " + token,
-              user: {
-                id: user.id,
-                name: user.name,
-                email: user.email
-              }
-            });
-          }
-        );
-        // res.json({ message: "Sucess" });
-      } else {
-        return res.status(400).json({ passwword: "Password incorrect" });
-      }
-    });
   });
 });
 //Protected router

@@ -14,8 +14,6 @@ const Profile = require("../../models/Profile");
 //Get users
 const User = require("../../models/User");
 
-const userId = "5dcd07c2f6b5a242a47670ad";
-
 router.get(
   "/test",
   passport.authenticate("jwt", { session: false }, (req, res) => {
@@ -23,7 +21,7 @@ router.get(
     console.log(message);
   })
 );
-
+//getting the current user logged in the platform
 router.get(
   "/",
   passport.authenticate("jwt", { session: false }),
